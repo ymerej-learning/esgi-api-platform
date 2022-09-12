@@ -3,13 +3,21 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
 use App\Repository\PizzaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource(mercure: true)]
+#[ApiResource(mercure: false)]
+#[Get(
+    normalizationContext: ['groups' => ['Default', 'pizza_get']]
+)]
+#[Post]
 #[ORM\Entity(repositoryClass: PizzaRepository::class)]
 class Pizza
 {
@@ -19,6 +27,7 @@ class Pizza
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('pizza_get')]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

@@ -6,7 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DetailRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ApiResource(mercure: true)]
+#[ApiResource(mercure: false)]
 #[ORM\Entity(repositoryClass: DetailRepository::class)]
 class Detail
 {

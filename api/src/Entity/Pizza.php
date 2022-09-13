@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Repository\PizzaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,9 +16,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(mercure: false)]
 #[Get(
-    normalizationContext: ['groups' => ['Default', 'pizza_get']]
+    normalizationContext: ['groups' => ['pizza_read']]
 )]
-#[Post]
+#[GetCollection(
+    normalizationContext: ['groups' => ['pizza_read']]
+)]
+#[Post(
+    denormalizationContext: ['groups' => ['pizza_write']],
+    normalizationContext: ['groups' => ['pizza_read']]
+)]
+#[Patch(
+    denormalizationContext: ['groups' => ['pizza_write']]
+)]
 #[ORM\Entity(repositoryClass: PizzaRepository::class)]
 class Pizza
 {
@@ -27,10 +37,11 @@ class Pizza
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('pizza_get')]
+    #[Groups(['pizza_read', 'pizza_write'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['pizza_read', 'pizza_write'])]
     private ?string $description = null;
 
     #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'pizza')]

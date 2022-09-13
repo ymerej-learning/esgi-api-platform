@@ -22,11 +22,8 @@ class OrderFixtures extends Fixture implements DependentFixtureInterface
         for($order = 0; $order < 10; $order++) {
             $object = (new Order())
                 ->setDatetime($faker->dateTime())
-                ->setCustomer($faker->randomElement($customers));
-
-            for($detail = 0; $faker->numberBetween(3, 8); $detail++) {
-                $object->addDetail($faker->randomElement($details));
-            }
+                ->setCustomer($faker->randomElement($customers))
+                ->addDetail($faker->randomElement($details));
 
             $manager->persist($object);
         }
@@ -35,7 +32,8 @@ class OrderFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies() {
         return [
-            DetailFixtures::class
+            CustomerFixtures::class,
+            DetailFixtures::class,
         ];
     }
 }

@@ -17,7 +17,6 @@ class PizzaFixtures extends Fixture implements DependentFixtureInterface
         $faker = Factory::create();
 
         $ingredients = $manager->getRepository(Ingredient::class)->findAll();
-        $details = $manager->getRepository(Detail::class)->findAll();
 
         for($pizza = 0; $pizza < 10; $pizza++) {
             $object = (new Pizza())
@@ -25,8 +24,7 @@ class PizzaFixtures extends Fixture implements DependentFixtureInterface
                 ->setDescription($faker->paragraph());
 
             for($ingredient = 0; $faker->numberBetween(3, 8); $ingredient++) {
-                $object->addIngredient($faker->randomElement($ingredients))
-                    ->addDetail($faker->randomElement($details));
+                $object->addIngredient($faker->randomElement($ingredients));
             }
 
             $manager->persist($object);
@@ -36,8 +34,7 @@ class PizzaFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies() {
         return [
-            IngredientFixtures::class,
-            DetailFixtures::class
+            IngredientFixtures::class
         ];
     }
 }

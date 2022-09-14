@@ -2,13 +2,12 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Detail;
-use Faker\Factory;
-use App\Entity\Pizza;
 use App\Entity\Ingredient;
-use Doctrine\Persistence\ObjectManager;
+use App\Entity\Pizza;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class PizzaFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -18,21 +17,23 @@ class PizzaFixtures extends Fixture implements DependentFixtureInterface
 
         $ingredients = $manager->getRepository(Ingredient::class)->findAll();
 
-        for($pizza = 0; $pizza < 10; $pizza++) {
+        for ($i = 0; $i < 10; $i++) {
             $object = (new Pizza())
                 ->setName($faker->name())
-                ->setDescription($faker->paragraph());
+                ->setDescription($faker->paragraph);
 
-            for($ingredient = 0; $faker->numberBetween(3, 8); $ingredient++) {
+            for ($y = 0; $y < $faker->numberBetween(3, 8); $y++) {
                 $object->addIngredient($faker->randomElement($ingredients));
             }
 
             $manager->persist($object);
         }
+
         $manager->flush();
     }
 
-    public function getDependencies() {
+    public function getDependencies()
+    {
         return [
             IngredientFixtures::class
         ];

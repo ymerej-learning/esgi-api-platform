@@ -2,10 +2,10 @@
 
 namespace App\DataFixtures;
 
-use Faker\Factory;
 use App\Entity\Ingredient;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class IngredientFixtures extends Fixture
 {
@@ -13,12 +13,13 @@ class IngredientFixtures extends Fixture
     {
         $faker = Factory::create();
 
-        for($ingredient = 0; $ingredient < 30; $ingredient++) {
+        for ($i = 0; $i < 40; $i++) {
             $object = (new Ingredient())
-                ->setName($faker->word());
+                ->setName($faker->name());
 
             $manager->persist($object);
         }
+
         $manager->flush();
     }
 }

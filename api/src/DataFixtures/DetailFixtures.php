@@ -2,11 +2,13 @@
 
 namespace App\DataFixtures;
 
-use Faker\Factory;
 use App\Entity\Detail;
-use Doctrine\Persistence\ObjectManager;
+use App\Entity\Order;
+use App\Entity\Pizza;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
 class DetailFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -14,25 +16,28 @@ class DetailFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Factory::create();
 
-        $orders = $manager->getRepository(Order::class)->findAll();
         $pizzas = $manager->getRepository(Pizza::class)->findAll();
+        $orders = $manager->getRepository(Order::class)->findAll();
 
-        for($detail = 0; $detail < 4; $detail++) {
+        for ($i = 0; $i < 10; $i++) {
             $object = (new Detail())
-                ->setPrice($faker->randomFloat(1, 20, 30))
-                ->setSize($faker->randomElement(['S', 'M', 'L', 'XL']))
                 ->setOrders($faker->randomElement($orders))
-                ->setPizza($faker->randomElement($pizzas));
+                ->setPizza($faker->randomElement($pizzas))
+                ->setPrice($faker->numberBetween(9, 14))
+                ->setSize($faker->randomElement(['S', 'M', 'XL']))
+            ;
 
             $manager->persist($object);
         }
+
         $manager->flush();
     }
 
-    public function getDependencies() {
+    public function getDependencies()
+    {
         return [
             OrderFixtures::class,
-            PizzaFixtures::class,
+            PizzaFixtures::class
         ];
     }
 }

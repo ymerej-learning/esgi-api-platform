@@ -3,13 +3,13 @@
 namespace App\DataFixtures;
 
 use App\Entity\Customer;
-use App\Entity\Detail;
-use Faker\Factory;
 use App\Entity\Order;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
 
-class OrderFixtures extends Fixture
+class OrderFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -17,13 +17,21 @@ class OrderFixtures extends Fixture
 
         $customers = $manager->getRepository(Customer::class)->findAll();
 
-        for($order = 0; $order < 10; $order++) {
+        for ($i = 0; $i < 10; $i++) {
             $object = (new Order())
                 ->setDatetime($faker->dateTime())
                 ->setCustomer($faker->randomElement($customers));
 
             $manager->persist($object);
         }
+
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            CustomerFixtures::class
+        ];
     }
 }

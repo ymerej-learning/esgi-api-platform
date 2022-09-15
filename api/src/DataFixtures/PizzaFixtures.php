@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Ingredient;
 use App\Entity\Pizza;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -20,7 +21,8 @@ class PizzaFixtures extends Fixture implements DependentFixtureInterface
         for ($i = 0; $i < 10; $i++) {
             $object = (new Pizza())
                 ->setName($faker->name())
-                ->setDescription($faker->paragraph);
+                ->setDescription($faker->paragraph)
+                ->setOwner(null);
 
             for ($y = 0; $y < $faker->numberBetween(3, 8); $y++) {
                 $object->addIngredient($faker->randomElement($ingredients));

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
@@ -13,6 +14,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ApiResource(mercure: false)]
 #[Get(
@@ -22,11 +24,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['pizza_read']]
 )]
 #[Post(
+    security: "is_granted('ROLE_DIRECTOR')",
     denormalizationContext: ['groups' => ['pizza_write']],
     normalizationContext: ['groups' => ['pizza_read']]
 )]
 #[Patch(
+    security: "is_granted('ROLE_DIRECTOR') or object.owner == user",
     denormalizationContext: ['groups' => ['pizza_write']]
+)]
+#[Delete(
+    security: "is_granted('ROLE_DIRECTOR') or object.owner == user"
 )]
 #[ORM\Entity(repositoryClass: PizzaRepository::class)]
 class Pizza
@@ -49,6 +56,11 @@ class Pizza
 
     #[ORM\OneToMany(mappedBy: 'pizza', targetEntity: Detail::class, orphanRemoval: true)]
     private Collection $detail;
+
+    #[ORM\ManyToOne(inversedBy: 'pizzas')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Gedmo\Blameable(on: 'create')]
+    private ?User $owner = null;
 
     public function __construct()
     {
@@ -135,6 +147,18 @@ class Pizza
                 $detail->setPizza(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }

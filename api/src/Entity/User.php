@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -27,6 +29,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Pizza::class, orphanRemoval: true)]
+    private Collection $pizzas;
+
+    public function __construct()
+    {
+        $this->pizzas = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -96,5 +106,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Pizza>
+     */
+    public function getPizzas(): Collection
+    {
+        return $this->pizzas;
+    }
+
+    public function addPizza(Pizza $pizza): self
+    {
+        if (!$this->pizzas->contains($pizza)) {
+            $this->pizzas[] = $pizza;
+            $pizza->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removePizza(Pizza $pizza): self
+    {
+        if ($this->pizzas->removeElement($pizza)) {
+            // set the owning side to null (unless already changed)
+            if ($pizza->getOwner() === $this) {
+                $pizza->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }

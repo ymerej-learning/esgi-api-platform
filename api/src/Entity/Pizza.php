@@ -52,13 +52,15 @@ class Pizza
     private ?string $description = null;
 
     #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'pizza')]
+    #[ORM\JoinColumn(nullable: true)]
     private Collection $ingredient;
 
     #[ORM\OneToMany(mappedBy: 'pizza', targetEntity: Detail::class, orphanRemoval: true)]
+    #[ORM\JoinColumn(nullable: true)]
     private Collection $detail;
 
     #[ORM\ManyToOne(inversedBy: 'pizzas')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['pizza_read'])]
     #[Gedmo\Blameable(on: 'create')]
     private ?User $owner = null;
 

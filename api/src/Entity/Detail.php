@@ -5,8 +5,12 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DetailRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource(mercure: false)]
+#[ApiResource(
+    mercure: false,
+    normalizationContext: ['groups' => ['detail_read']]
+    )]
 #[ORM\Entity(repositoryClass: DetailRepository::class)]
 class Detail
 {
@@ -16,17 +20,21 @@ class Detail
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['pizza_read', 'detail_read'])]
     private ?float $price = null;
 
     #[ORM\Column(length: 2)]
+    #[Groups(['pizza_read', 'detail_read'])]
     private ?string $size = null;
 
     #[ORM\ManyToOne(inversedBy: 'detail')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('detail_read')]
     private ?Order $orders = null;
 
     #[ORM\ManyToOne(inversedBy: 'detail')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('detail_read')]
     private ?Pizza $pizza = null;
 
     public function getId(): ?int

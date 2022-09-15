@@ -16,16 +16,13 @@ class DetailFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Factory::create();
 
-        $pizzas = $manager->getRepository(Pizza::class)->findAll();
         $orders = $manager->getRepository(Order::class)->findAll();
 
         for ($i = 0; $i < 10; $i++) {
             $object = (new Detail())
                 ->setOrders($faker->randomElement($orders))
-                ->setPizza($faker->randomElement($pizzas))
                 ->setPrice($faker->numberBetween(9, 14))
-                ->setSize($faker->randomElement(['S', 'M', 'XL']))
-            ;
+                ->setSize($faker->randomElement(['S', 'M', 'XL']));
 
             $manager->persist($object);
         }
@@ -36,8 +33,7 @@ class DetailFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
-            OrderFixtures::class,
-            PizzaFixtures::class
+            OrderFixtures::class
         ];
     }
 }

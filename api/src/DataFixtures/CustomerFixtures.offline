@@ -16,9 +16,9 @@ class CustomerFixtures extends Fixture
         for ($i = 0; $i < 40; $i++) {
             $object = (new Customer())
                 ->setFirstname($faker->firstName())
-                ->setLastname($faker->lastName)
-                ->setPhone($faker->phoneNumber)
-                ->setAddress($faker->address)
+                ->setLastname($faker->lastName())
+                ->setPhone($faker->phoneNumber())
+                ->setAddress($faker->address())
                 ;
 
             $manager->persist($object);

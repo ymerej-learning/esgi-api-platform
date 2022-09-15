@@ -11,11 +11,35 @@ class IngredientFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $faker = Factory::create();
+        $ingredients = [
+            "Tomate",
+            "Mozzarella",
+            "Basilic",
+            "Jambon",
+            "Champignons",
+            "Emmental",
+            "Roquefort",
+            "Chèvre",
+            "Reblochon",
+            "Olives noires",
+            "Artichauts",
+            "Oignons",
+            "Pepperoni",
+            "Origan",
+            "Ail",
+            "Poivrons",
+            "Courgettes",
+            "Basilic",
+            "Romarin",
+            "Aneth",
+            "Pommes de terre",
+            "Ananas",
+            "Saumon",
+        ];
 
-        for ($i = 0; $i < 40; $i++) {
+        for ($i = 0; $i < count($ingredients); $i++) {
             $object = (new Ingredient())
-                ->setName($faker->name());
+                ->setName($ingredients[$i]);
 
             $manager->persist($object);
         }

@@ -2,7 +2,9 @@
 
 namespace App\DataFixtures;
 
+use Faker\Factory;
 use App\Entity\User;
+use App\Entity\Pizza;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
@@ -30,7 +32,6 @@ class UserFixtures extends Fixture
             ->setPassword('$2y$13$NsHOoRXAHfkVvf56tH/4zurDuTWXlVEVtmlI3aIfFQ5MQNnX/CpJ6'); //director
 
         $manager->persist($object);
-
         $manager->flush();
     }
 }

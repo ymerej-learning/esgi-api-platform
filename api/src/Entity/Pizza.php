@@ -15,6 +15,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 #[ApiResource(mercure: false)]
 #[Get(
@@ -36,6 +39,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
     security: "is_granted('ROLE_DIRECTOR') or object.owner == user"
 )]
 #[ORM\Entity(repositoryClass: PizzaRepository::class)]
+#[UniqueEntity('name', message: 'Le nom est déjà utilisé')]
 class Pizza
 {
     #[ORM\Id]
@@ -45,6 +49,8 @@ class Pizza
 
     #[ORM\Column(length: 255)]
     #[Groups(['pizza_read', 'pizza_write'])]
+    #[NotNull]
+    #[NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -54,6 +60,7 @@ class Pizza
     #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'pizza')]
     #[ORM\JoinColumn(nullable: true)]
     private Collection $ingredient;
+    //IRI for POST pizza => /ingredient/42
 
     #[ORM\OneToMany(mappedBy: 'pizza', targetEntity: Detail::class, orphanRemoval: true)]
     #[ORM\JoinColumn(nullable: true)]
